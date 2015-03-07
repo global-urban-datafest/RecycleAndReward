@@ -13,7 +13,7 @@ class GarbageTraceProfileAdmin(admin.ModelAdmin):
         return obj.user.get_full_name()
 
 class BagAdmin(admin.ModelAdmin):
-    list_display = ['barcode', 'user', 'weight', 'status', 'bag_type']
+    list_display = ['barcode', 'user', 'points', 'weight', 'status', 'bag_type']
 
 class CheckPointAdmin(admin.ModelAdmin):
     list_display = ['name', 'key', 'point_type']

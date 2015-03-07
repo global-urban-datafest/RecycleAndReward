@@ -40,6 +40,7 @@ class Bag(models.Model):
         
     barcode = models.CharField(max_length=50)
     user = models.ForeignKey(User, related_name="BagUser", null=True, blank=True, default=None)    
+    points = models.IntegerField(default=0)
     weight = models.FloatField(default=0)
     status = models.IntegerField(choices=BAG_STATUS, default=0)
     bag_type = models.IntegerField(choices=BAG_TYPE, default=0)

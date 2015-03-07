@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from traceapp.models import *
+import logging
 
 # Create your views here.
+log = logging.getLogger(__name__)
 
 class ReturnCode(object):
     """
@@ -16,6 +18,17 @@ class ReturnCode(object):
     CHECKPOINT_INVALID = '05'
     WEIGHT_INVALID = '06'
 
+def logging_response(func):
+    """
+    A simple logging decorator for debugging response data
+    """
+    def func_wrapper(request):
+        response = func(request)
+        log.debug('response: {0}'.format(response.content)) # print response
+        return response
+    return func_wrapper
+
+@logging_response
 def garbage_upload(request):
     """
     HTTP GET: /traceapp/upload/
@@ -55,7 +68,7 @@ def garbage_upload(request):
 
         # validate weight
         try:
-            if not weight or float(weight) <= 0 or float(weight) > GarbageConstants.BAG_MAX_WEIGHT:
+            if not weight or float(weight) / 100.0 <= 0 or float(weight) / 100.0 > GarbageConstants.BAG_MAX_WEIGHT:
                 trace = BagTrace.objects.create(user=bag.user, bag=bag, check_point=checkpoint, event=3, extra=weight) # reject weight
                 trace.save()
                 return HttpResponse(ReturnCode.WEIGHT_INVALID)
@@ -65,13 +78,13 @@ def garbage_upload(request):
             return HttpResponse(ReturnCode.WEIGHT_INVALID)
 
         # calculate weight and bonus
-        bag_weight = float(weight)
-        bag.weight = bag_weight
+        bag.weight = float(weight) / 100.0
+        bag.points= int(weight)
         bag.status = 2
         bag.save()
 
         profile = bag.user.profile
-        profile.points_onway += bag.weight * 100
+        profile.points_onway += bag.points
         profile.total_weight += bag.weight
         profile.save()        
 
@@ -86,7 +99,7 @@ def garbage_upload(request):
         return HttpResponse(ReturnCode.FIELDS_NOT_ENOUGH)
 
 
-
+@logging_response
 def garbage_checkpoint(request):
     """
     HTTP GET: /traceapp/checkpoint/
@@ -124,7 +137,7 @@ def garbage_checkpoint(request):
             checkpoint_action = int(action)
 
             # insert check point trace record
-            if checkpoint_action == 4: # bag arrived
+            if checkpoint_action == 4 and bag.status >= 1 and bag.status < 4: # bag arrived (status >= Assigned, < Recycled)
                 bag.status = 3 # Bag: Transfer               
                 bag.save()
     
@@ -145,6 +158,7 @@ def garbage_checkpoint(request):
     return HttpResponse('Checkpoint OK')
 
 
+@logging_response
 def garbage_validate(request):
     """
     HTTP GET: /traceapp/validate/
@@ -197,8 +211,8 @@ def garbage_validate(request):
 
                 # update user's points
                 profile = bag.user.profile
-                profile.points += bag.weight * 100
-                profile.points_onway -= bag.weight
+                profile.points += bag.points
+                profile.points_onway -= bag.points
                 profile.save()
                 
                 # update trace
@@ -213,8 +227,8 @@ def garbage_validate(request):
 
                 # update user's points
                 profile = bag.user.profile
-                profile.points_failed -= bag.weight * 100
-                profile.points_onway -= bag.weight
+                profile.points_failed -= bag.points
+                profile.points_onway -= bag.points
                 profile.save()
 
                 # update trace
