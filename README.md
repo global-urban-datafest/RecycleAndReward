@@ -9,6 +9,10 @@
 
 ### 服务器接口 Service API
 
+ * 分配垃圾袋 Assign Bags
+
+http://localhost:8000/traceapp/upload/?barcode=1000000001&key=AAAAA&userid=2
+
  * 丢垃圾 Dump Bags
 
 http://localhost:8000/traceapp/upload/?barcode=1000000001&key=AAAAA&weight=1.1
