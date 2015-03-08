@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 
 # Create your models here.
@@ -8,6 +8,10 @@ class GarbageConstants(object):
     BAG_MAX_WEIGHT = 100
 
 class GarbageTraceProfile(models.Model):
+    class Meta:
+        verbose_name = _('Garbage Trace Profile')
+        verbose_name_plural = _('Garbage Trace Profiles')
+
     # This field is required.
     user = models.OneToOneField(User, related_name='profile')
     address = models.CharField(_("Address"), max_length=255, default='')    
@@ -49,6 +53,10 @@ class Bag(models.Model):
         return self.barcode
 
 class CheckPoint(models.Model):
+    class Meta:
+        verbose_name = _('Check Point')
+        verbose_name_plural = _('Check Points')
+
     CHECK_POINT_TYPE = (
         (0, _("Dustbin")),
         (1, _("Disctrict Center")),
@@ -63,6 +71,10 @@ class CheckPoint(models.Model):
         return self.name
 
 class BagTrace(models.Model):
+    class Meta:
+        verbose_name = _('Bag Trace')
+        verbose_name_plural = _('Bag Traces')
+
     BAG_TRACE_EVENT = (
         (0, _("Assign to user")),
         (1, _("Dump bag")),

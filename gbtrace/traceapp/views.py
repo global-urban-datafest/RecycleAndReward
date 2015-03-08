@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from traceapp.models import *
+from django.contrib.auth.models import User
 import logging
 
 # Create your views here.
@@ -17,6 +18,7 @@ class ReturnCode(object):
     FIELDS_NOT_ENOUGH = '04'
     CHECKPOINT_INVALID = '05'
     WEIGHT_INVALID = '06'
+    USER_INVALID = '07'
 
 def logging_response(func):
     """
@@ -24,9 +26,60 @@ def logging_response(func):
     """
     def func_wrapper(request):
         response = func(request)
+        log.debug('request: {0}?{1}'.format(request.path, request.META['QUERY_STRING'])) # print request
         log.debug('response: {0}'.format(response.content)) # print response
         return response
     return func_wrapper
+
+
+@logging_response
+def garbage_assign(request):
+    """
+    HTTP GET: /traceapp/assign/
+    Parameters:
+        userid => Integer, user's id
+        barcode => String, garbage bag's barcode
+        #checkpoint => Integer, check point's id
+        key => String, check point's key
+    """
+    barcode = request.REQUEST.get('barcode', None)
+    userid = request.REQUEST.get('userid', None)
+    key = request.REQUEST.get('key', None)
+    
+    if barcode and userid and key:
+        # proceed assign action
+        
+        # validate bag status
+        try:
+            bag = Bag.objects.get(barcode=barcode)
+            if bag.status >= 1 or bag.user: # BAG_STATUS: 1 = Assigned
+                return HttpResponse(ReturnCode.BARCODE_USED)
+        except Bag.DoesNotExist:
+            return HttpResponse(ReturnCode.BARCODE_INVALID)
+
+        # validate check point
+        try:
+            checkpoint = CheckPoint.objects.get(key=key)
+        except CheckPoint.DoesNotExist:
+            return HttpResponse(ReturnCode.CHECKPOINT_INVALID)
+        
+        # validate user
+        try:
+            user = User.objects.get(id=userid, is_active=True)
+        except User.DoesNotExist:
+            return HttpResponse(ReturnCode.USER_INVALID)
+        
+        bag.user = user
+        bag.status = 1 # assign status
+        bag.save()
+
+        trace = BagTrace.objects.create(user=bag.user, bag=bag, check_point=checkpoint, event=0) # dump bag
+        trace.save()
+
+        return HttpResponse(ReturnCode.ACCEPTED)
+
+    else:
+        return HttpResponse(ReturnCode.FIELDS_NOT_ENOUGH)
 
 @logging_response
 def garbage_upload(request):
@@ -123,13 +176,13 @@ def garbage_checkpoint(request):
             bag = Bag.objects.get(barcode=barcode)
             if bag.status < 1 : # BAG_STATUS: 1 = Assigned, 2 = Used
                 return HttpResponse(ReturnCode.BARCODE_INVALID)
-        except DoesNotExist:
+        except Bag.DoesNotExist:
             return HttpResponse(ReturnCode.BARCODE_INVALID)
 
         # validate check point
         try:
             checkpoint = CheckPoint.objects.get(key=key)
-        except DoesNotExist:
+        except CheckPoint.DoesNotExist:
             return HttpResponse(ReturnCode.CHECKPOINT_INVALID)
 
         # validate action
@@ -181,13 +234,13 @@ def garbage_validate(request):
             bag = Bag.objects.get(barcode=barcode)
             if bag.status < 1 : # BAG_STATUS: 1 = Assigned, 2 = Used
                 return HttpResponse(ReturnCode.BARCODE_INVALID)
-        except DoesNotExist:
+        except Bag.DoesNotExist:
             return HttpResponse(ReturnCode.BARCODE_INVALID)
 
         # validate check point
         try:
             checkpoint = CheckPoint.objects.get(key=key)
-        except DoesNotExist:
+        except CheckPoint.DoesNotExist:
             return HttpResponse(ReturnCode.CHECKPOINT_INVALID)
 
         # validate action
@@ -244,4 +297,14 @@ def garbage_validate(request):
     
     else:
         return HttpResponse(ReturnCode.FIELDS_NOT_ENOUGH)
+
+from django.utils.translation import ugettext_lazy as _
+def test_page(request):
+    s = ""
+    for (v, text) in Bag.BAG_STATUS:
+        s += (_(text) + "<br/>")
+    for (v, text) in BagTrace.BAG_TRACE_EVENT:
+        s += (text + "<br/>")
+    return HttpResponse(s)
+
 
