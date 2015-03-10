@@ -1,5 +1,5 @@
 """
-Django settings for gbtrace project.
+Django settings for app project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -55,9 +55,9 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 
-ROOT_URLCONF = 'gbtrace.urls'
+ROOT_URLCONF = 'app.urls'
 
-WSGI_APPLICATION = 'gbtrace.wsgi.application'
+WSGI_APPLICATION = 'app.wsgi.application'
 
 
 # Database

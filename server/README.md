@@ -55,6 +55,5 @@ http://localhost:8000/admin/traceapp/bagtrace/
  * 04 = 请求参数不足 FIELDS_NOT_ENOUGH
  * 05 = 机构无效 CHECKPOINT_INVALID
  * 06 = 重量无效 WEIGHT_INVALID
-
-
+ * 07 = 用户无效 USER_INVALID
 
