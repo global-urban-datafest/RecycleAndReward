@@ -1,0 +1,360 @@
+C51 COMPILER V9.00   MAX7219                                                               03/09/2015 22:43:04 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAX7219
+OBJECT MODULE PLACED IN MAX7219.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE MAX7219.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*------------------------------------------------------------------------------------
+   2           * ÏîÄ¿Ãû³Æ:
+   3          
+   4               MAX7219Çý¶¯³ÌÐòv1.0
+   5          
+   6           * ¹¦ÄÜÃèÊö:
+   7          
+   8               1¡¢CODE-B½âÂë·½Ê½ÏÔÊ¾
+   9                   2¡¢·Ç½âÂë·½Ê½ÏÔÊ¾Êý×ÖºÍ×Ö·û
+  10                   3¡¢´ò¿ª»ò¹Ø±ÕÏÔÊ¾
+  11          
+  12           * °æÈ¨ÐÅÏ¢:
+  13          
+  14               (c) ·ÉÒíµç×Ó, 2012.
+  15          
+  16           * ÀúÊ·°æ±¾:
+  17                   2012-11-26£º
+  18                     -Ôö¼ÓÇåÏÔÊ¾¹¦ÄÜ
+  19                   2012-11-25£º
+  20                     -ÐÞ¸ÄÇý¶¯£¬Ôö¼ÓÁË¶Ô¼¶ÁªÄ£Ê½µÄÖ§³Ö
+  21               2012-06-30:
+  22                 - ³õÊ¼°æ±¾ V1.0.0;
+  23          
+  24           * ±¸×¢:
+  25               - Ê¹ÓÃÇ°ÐèÒªÔÚMAX7219.hÎÄ¼þÉèÖÃÍ¨ÐÅ½Ó¿Ú¡¢¼¶Áª¸öÊýºÍ³õÊ¼»¯Êý¾Ý
+  26          -------------------------------------------------------------------------------------*/
+  27          
+  28          /************************°üº¬Í·ÎÄ¼þ***************************************************/
+  29          
+  30          #include <reg51.h>
+  31          #include "max7219.h"
+  32          
+  33          /************************±àÂë±í¶¨Òå***************************************************/
+  34          
+  35          unsigned char code Seg_test[8]={0x40,0x20,0x10,0x08,0x04,0x02,0x01,0x80};                                                //°Ë¶ÎÊýÂë¹ÜÏÔÊ¾µÄÃ¿Ò»¶Î
+  36          unsigned char code Number_arr[10]={0x7e,0x30,0x6d,0x79,0x33,0x5b,0x5f,0x70,0x7f,0x7b};                           //Êý×Ö0-9±àÂëÊý
+             -×é
+  37          unsigned char code Character_arr[53]={0x77,0,0x4e,0,0x4f,0x47,0,0x37,0,0,0,0x0e,0,0,0,                           //ÊýÂë¹Ü¿ÉÏÔÊ¾×
+             -Ö·û±àÂë±í
+  38                                                                                    0x67,0x73,0,0,0,0x3e,0,0,0,0,0,0,0,0,0,0x08,0,0,0x1f,                  //°üÀ¨_,A,C,E,F,H,L,P,Q,U,-,b,c,d,h,l,
+             -n,o,u
+  39                                                                                    0x0d,0x3d,0,0,0,0x17,0,0,0,0x06,0,0x15,0x1d,0,0,0x05,0,0,0x1c};
+  40          
+  41          /*************************************************************************************
+  42          *º¯ÊýÃû£ºvoid DISPLAY_TEST(void)
+  43          *¹¦  ÄÜ£ºMAX7219ÏÔÊ¾²âÊÔ£¬µãÁÁËùÓÐÊýÂë¹ÜµÄËùÒÔ¶Î£¬ÓÃÓÚ¼ì²âÊýÂë¹ÜµÄ×´Ì¬
+  44          *Ëµ  Ã÷£º½«DISPLAY_TEST_REGISTERÉèÖÃÎª0x01½øÈëÏÔÊ¾²âÊÔÄ£Ê½£¬ÉèÖÃÎª0x00ÍË³ö²âÊÔÄ£Ê½
+  45          **************************************************************************************/
+  46          void DISPLAY_TEST(void)
+  47          {
+  48   1              unsigned char i;
+  49   1              for(i=0;i<=SNUM;i++) 
+  50   1              {
+  51   2                      Write7219(i,DISPLAY_TEST_REGISTER,0x01);
+  52   2              }
+C51 COMPILER V9.00   MAX7219                                                               03/09/2015 22:43:04 PAGE 2   
+
+  53   1      }
+  54          /*************************************************************************************
+  55          *º¯ÊýÃû£ºvoid DISPLAY_NORMAL(void)
+  56          *¹¦  ÄÜ£ºMAX7219Õý³£ÏÔÊ¾
+  57          *Ëµ  Ã÷£º½«DISPLAY_TEST_REGISTERÉèÖÃÎª0x01½øÈëÏÔÊ¾²âÊÔÄ£Ê½£¬ÉèÖÃÎª0x00ÍË³ö²âÊÔÄ£Ê½
+  58          **************************************************************************************/
+  59          void DISPLAY_NORMAL(void)
+  60          {
+  61   1              unsigned char i;
+  62   1              for(i=0;i<=SNUM;i++) 
+  63   1              {
+  64   2                      Write7219(i,DISPLAY_TEST_REGISTER,0x00);
+  65   2              }
+  66   1      }
+  67          /*************************************************************************************
+  68          *º¯ÊýÃû£ºvoid SHUT_DOWN(void)
+  69          *¹¦  ÄÜ£ºMAX7219¹Ø±ÕÏÔÊ¾
+  70          *Ëµ  Ã÷£º½«SHUT_DOWN_REGISTER¼Ä´æÆ÷ÉèÖÃÎª0x00¿ÉÒÔ¹Ø±ÕÏÔÊ¾£¬ÉèÖÃÎª0x01´ò¿ªÏÔÊ¾
+  71          **************************************************************************************/
+  72          void SHUT_DOWN(void)
+  73          {
+  74   1              unsigned char i;
+  75   1              for(i=0;i<=SNUM;i++) 
+  76   1              {
+  77   2                      Write7219(i,SHUT_DOWN_REGISTER,0x00);
+  78   2              }
+  79   1      }
+  80          /*************************************************************************************
+  81          *º¯ÊýÃûvoid RE_DISPLAY(void)
+  82          *¹¦ÄÜ£ºMAX7219 »Ö¸´ÏÔÊ¾
+  83          *Ëµ  Ã÷£º½«SHUT_DOWN_REGISTER¼Ä´æÆ÷ÉèÖÃÎª0x00¿ÉÒÔ¹Ø±ÕÏÔÊ¾£¬ÉèÖÃÎª0x01´ò¿ªÏÔÊ¾
+  84          **************************************************************************************/
+  85          void RE_DISPLAY(void)
+  86          {
+  87   1              unsigned char i;
+  88   1              for(i=0;i<=SNUM;i++) 
+  89   1              {
+  90   2                      Write7219(i,SHUT_DOWN_REGISTER,0x01);
+  91   2              }
+  92   1      }
+  93          /*************************************************************************************
+  94          *º¯ÊýÃû:void OPEN_DECODE_MODE(void)
+  95          *¹¦  ÄÜ£ºMAX7219 ´ò¿ª½âÂëÄ£Ê½
+  96          *Ëµ  Ã÷£º¸ù¾ÝMAX7219.hÎÄ¼þ³õÊ¼Ä£Ê½ÉèÖÃÊý¾ÝDECODE_MODE_INITµÄÖµÉèÖÃmax7219µÄ½âÂëÄ£Ê½
+  97          **************************************************************************************/
+  98          void OPEN_DECODE_MODE(void)
+  99          {
+ 100   1              unsigned char i;
+ 101   1              for(i=0;i<=SNUM;i++) 
+ 102   1              {
+ 103   2                      Write7219(i,DECODE_MODE_REGISTER,DECODE_MODE_INIT);
+ 104   2              }
+ 105   1      }
+ 106          /*************************************************************************************
+ 107          *º¯ÊýÃû£ºvoid CLOSE_DECODE_MODE(void)
+ 108          *¹¦  ÄÜ£ºMAX7219 ¹Ø±Õ½âÂëÄ£Ê½
+ 109          *Ëµ  Ã÷£º½«DECODE_MODE_REGISTER¼Ä´æÆ÷µÄÖµÉèÖÃÎª0x00ÒÔ¹Ø±Õ½âÂëÄ£Ê½
+ 110          **************************************************************************************/
+ 111          void CLOSE_DECODE_MODE(void)
+ 112          {
+ 113   1              unsigned char i;
+ 114   1              for(i=0;i<=SNUM;i++) 
+C51 COMPILER V9.00   MAX7219                                                               03/09/2015 22:43:04 PAGE 3   
+
+ 115   1              {
+ 116   2                      Write7219(i,DECODE_MODE_REGISTER,0x00);
+ 117   2              }
+ 118   1      }
+ 119          /*************************************************************************************
+ 120          *º¯ÊýÃûvoid SET_INTENSITY(unsigned char level)
+ 121          *¹¦ÄÜ£ºMAX7219 ÉèÖÃÁÁ¶ÈµÈ¼¶£¬ÉèÖÃÁÁ¶È£¬È¡Öµ´Ó0x00µ½0x0F,ÁÁ¶ÈÖð²½Ôö¼Ó
+ 122          **************************************************************************************/
+ 123          void SET_INTENSITY(unsigned char level)
+ 124          {
+ 125   1              unsigned char i;
+ 126   1              for(i=0;i<=SNUM;i++) 
+ 127   1              {
+ 128   2                      Write7219(i,INTENSITY_REGISTER,level);
+ 129   2              }
+ 130   1      }
+ 131          /*************************************************************************************
+ 132          *º¯ÊýÃû£ºvoid CLEAR_DISPLAY(void)
+ 133          *¹¦  ÄÜ£ºMAX7219 ÇåÏÔÊ¾
+ 134          *Ëµ  Ã÷£º½«max7219µÄÏÔÊ¾¼Ä´æÆ÷µÄÖµÉèÖÃÎª0x00ÒÔÇå³ý£¬
+ 135                           ÔÚÉÏµç³õÊ¼»¯max7219ºóµ÷ÓÃ£¬·ÀÖ¹ÏÔÊ¾ÂÒÂë ¡£
+ 136          **************************************************************************************/
+ 137          void CLEAR_DISPLAY(void)
+ 138          {
+ 139   1              unsigned char i,j;
+ 140   1              for(i=0;i<=SNUM;i++) 
+ 141   1              {
+ 142   2                      for(j=1;j<=8;j++)
+ 143   2                      {
+ 144   3                              Max7219_UserDecode_Display(i,j,' ',0);
+ 145   3                      }
+ 146   2              }
+ 147   1      }
+ 148          
+ 149          /*************************************************************************************
+ 150          *º¯ÊýÃûvoid Init_Max7219(void)
+ 151          *¹¦ÄÜ£ºMAX7219 ³õÊ¼»¯,ÉèÖÃMAX7219 ÄÚ²¿µÄ¿ØÖÆ¼Ä´æÆ÷
+ 152          **************************************************************************************/
+ 153          void Init_Max7219(void)
+ 154          {
+ 155   1              unsigned char i;
+ 156   1              for(i=1;i<=SNUM;i++)
+ 157   1              {
+ 158   2                      Write7219(i,SHUT_DOWN_REGISTER,SHUT_DOWN_INIT);                         //¿ªÆôÕý³£¹¤×÷Ä£Ê½£¨0xX1£© 
+ 159   2                      Write7219(i,DISPLAY_TEST_REGISTER,DISPLAY_TEST_INIT);           //Ñ¡Ôñ²âÊÔÄ£Ê½£¨0xff£©
+ 160   2                      Write7219(i,DECODE_MODE_REGISTER,DECODE_MODE_INIT);                     //Ñ¡ÓÃCODEB 0-3
+ 161   2                      Write7219(i,SCAN_LIMIT_REGISTER,SCAN_LIMIT_INIT);                       //Ñ¡Ôñ0-4
+ 162   2                      Write7219(i,INTENSITY_REGISTER,INTENSITY_INIT);                         //ÉèÖÃ³õÊ¼ÁÁ¶È
+ 163   2              }
+ 164   1      }
+ 165          /*************************************************************************************
+ 166          *º¯ÊýÃûvoid Write7219(unsigned char address,unsigned char dat)
+ 167          *¹¦ÄÜ£ºµØÖ·¡¢Êý¾Ý·¢ËÍ×Ó³ÌÐò
+ 168          *²ÎÊý£ºnum¡ª¡ªÔÚ¼¶ÁªµÄµÚ¼¸Æ¬Ä£¿éÉÏÏÔÊ¾£¬´ÓÇ°µ½ºóÒÀ´ÎÎª1¡¢2¡¢3...
+ 169                     address¡ª¡ªÏÔÊ¾µØÖ·
+ 170                     dat¡ª¡ªÊý¾Ý
+ 171          **************************************************************************************/
+ 172          void Write7219(unsigned char num,unsigned char address,unsigned char dat)
+ 173          {
+ 174   1              unsigned char i,j;
+ 175   1              CS=0;                                           // À­µÍÆ¬Ñ¡Ïß, Ñ¡ÖÐÆ÷¼þ 
+ 176   1      
+C51 COMPILER V9.00   MAX7219                                                               03/09/2015 22:43:04 PAGE 4   
+
+ 177   1              for(i=0;i<(SNUM-num);i++)
+ 178   1                      for(j=0;j<16;j++)
+ 179   1                      {
+ 180   2                              CLK=0;                          // ÇåÁãÊ±ÖÓ×ÜÏß 
+ 181   2                              DI=0;
+ 182   2                              CLK=1;
+ 183   2                      }
+ 184   1      
+ 185   1              for (i=0;i<8;i++)                       // ÒÆÎ»Ñ­»·8 ´Î
+ 186   1              {
+ 187   2                      CLK=0;                                  // ÇåÁãÊ±ÖÓ×ÜÏß 
+ 188   2                      if((address &0x80))             // Ã¿´ÎÈ¡¸ßÎ»
+ 189   2                      {
+ 190   3                              DI=1;
+ 191   3                      }
+ 192   2                      else
+ 193   2                      {
+ 194   3                              DI=0;
+ 195   3                      }
+ 196   2      
+ 197   2                      address <<=1;                   // ×óÒÆÒ»Î»
+ 198   2                      CLK=1;                              // Ê±ÖÓÉÏÉýÑØ,·¢ËÍµØÖ· 
+ 199   2              }
+ 200   1      
+ 201   1              for (i=0;i<8;i++)
+ 202   1              {
+ 203   2                      CLK=0;
+ 204   2                      if((dat&0x80))
+ 205   2                      DI=1;
+ 206   2                      else
+ 207   2                      DI=0;
+ 208   2                      dat <<=1; 
+ 209   2                      CLK=1;
+ 210   2              }
+ 211   1              for(i=0;i<(num-1);i++)
+ 212   1                      for(j=0;j<16;j++)
+ 213   1                      {
+ 214   2                              CLK=0;                          // ÇåÁãÊ±ÖÓ×ÜÏß 
+ 215   2                              DI=0;
+ 216   2                              CLK=1;
+ 217   2                      }
+ 218   1      
+ 219   1              CS=1;                                           // ·¢ËÍ½áÊø,ÉÏÉýÑØËø´æÊý¾Ý 
+ 220   1      }
+ 221          /*************************************************************************************
+ 222          *º¯ÊýÃûinit_system
+ 223          *¹¦ÄÜ£º³õÊ¼»¯CS | DI | CLK£¬²¢Ê¹CS | DI | CLK³õÊ¼×´Ì¬Îª¸ß
+ 224          **************************************************************************************/
+ 225          void Init_system()
+ 226          {
+ 227   1              CS=0;
+ 228   1              DI=0;
+ 229   1              CLK=0;
+ 230   1              CS=1;
+ 231   1              DI=1;
+ 232   1              CLK=1;
+ 233   1      }
+ 234          /*************************************************************************************
+ 235          *º¯ÊýÃûMax7219_Decode_Display(unsigned char adress,unsigned dat,unsigned char dot)
+ 236          *¹¦ÄÜ£º½âÂëÄ£Ê½Ð´×Ö·û×Ó³ÌÐò
+ 237          *²ÎÊý£ºnum¡ª¡ªÔÚ¼¶ÁªµÄµÚ¼¸Æ¬Ä£¿éÉÏÏÔÊ¾£¬´ÓÇ°µ½ºóÒÀ´ÎÎª1¡¢2¡¢3...
+ 238                     address¡ª¡ªÏÔÊ¾µØÖ·
+C51 COMPILER V9.00   MAX7219                                                               03/09/2015 22:43:04 PAGE 5   
+
+ 239                     c¡ª¡ªÊý¾Ý
+ 240                     dot¡ª¡ªÊÇ·ñÏÔÊ¾Ð¡Êýµã£¬0£º²»ÏÔÊ¾ 1;ÏÔÊ¾
+ 241          **************************************************************************************/
+ 242          void Max7219_Decode_Display(unsigned char num,unsigned char adress,unsigned char c,unsigned char dot)
+ 243          {
+ 244   1              OPEN_DECODE_MODE();
+ 245   1              
+ 246   1              if((dot&0x01)==0x01)            //ÅÐ¶ÏÊÇ·ñÏÔÊ¾Ð¡Êýµã£¬Èç¹ûdotÉèÖÃÎª1£¬ÔòÏÔÊ¾Ð¡Êýµã
+ 247   1              {
+ 248   2                      c=c|0x80;
+ 249   2              }
+ 250   1              Write7219(num,adress,c);
+ 251   1      }
+ 252          
+ 253          /*************************************************************************************
+ 254          *º¯ÊýÃûMax7219_UserDecode_Display(unsigned char adress,unsigned dat,unsigned char dot)
+ 255          *¹¦ÄÜ£º·Ç½âÂëÄ£Ê½Ð´×Ö·û×Ó³ÌÐò
+ 256          *²ÎÊý£ºnum¡ª¡ªÔÚ¼¶ÁªµÄµÚ¼¸Æ¬Ä£¿éÉÏÏÔÊ¾£¬´ÓÇ°µ½ºóÒÀ´ÎÎª1¡¢2¡¢3...
+ 257                     address¡ª¡ªÏÔÊ¾µØÖ·
+ 258                     c¡ª¡ªÊý¾Ý
+ 259                     dot¡ª¡ªÊÇ·ñÏÔÊ¾Ð¡Êýµã£¬0£º²»ÏÔÊ¾ 1;ÏÔÊ¾
+ 260          **************************************************************************************/
+ 261          void Max7219_UserDecode_Display(unsigned char num,unsigned char adress,unsigned char c,unsigned char dot)
+ 262          {
+ 263   1              CLOSE_DECODE_MODE();
+ 264   1              
+ 265   1              if((dot&0x01)==0x01)                                                    //ÅÐ¶ÏÊÇ·ñÏÔÊ¾Ð¡Êýµã£¬Èç¹ûdotÉèÖÃÎª1£¬ÔòÏÔÊ¾Ð¡Êýµã
+ 266   1              {
+ 267   2                      c=c|0x80;
+ 268   2              }
+ 269   1              if(c>=0&&c<=9)                                                                  //ÅÐ¶ÏÊÇ·ñÎªÊý×Ö
+ 270   1              {
+ 271   2                      Write7219(num,adress,Number_arr[c]);
+ 272   2              }
+ 273   1              if(c>=65&&c<=117)                                                               //ÅÐ¶ÏÊÇ·ñÎª×Ö·û´Ó¡¯A'µ½¡®u¡¯
+ 274   1              {
+ 275   2                      Write7219(num,adress,Character_arr[(c-65)]);
+ 276   2              }
+ 277   1              if(c==45)                                                                               //ÅÐ¶ÏÊÇ·ñÎª¡¯-¡®ºÅ
+ 278   1              {
+ 279   2                      Write7219(num,adress,0x01);
+ 280   2              }
+ 281   1              if(c==32)                                                                               //ÏÔÊ¾¿Õ°×
+ 282   1              {
+ 283   2                      Write7219(num,adress,0x00);
+ 284   2              } 
+ 285   1              if(c==61)                                                                           //ÅÐ¶ÏÊÇ·ñÎª¡®=¡¯ºÅ
+ 286   1              {
+ 287   2                      Write7219(num,adress,0x09);
+ 288   2              }
+ 289   1              if(c==46)                                                                           //ÅÐ¶ÏÊÇ·ñÎª¡®.¡¯ºÅ
+ 290   1              {
+ 291   2                      Write7219(num,adress,0x80);
+ 292   2              }
+ 293   1      }
+ 294          
+ 295          /*************************************************************************************
+ 296          *º¯ÊýÃûMax7219_Nodecode_Display(unsigned char adress,unsigned dat,unsigned char dot)
+ 297          *¹¦ÄÜ£º·Ç½âÂëÄ£Ê½Ð´×Ö·û×Ó³ÌÐò
+ 298          *²ÎÊý£ºnum¡ª¡ªÔÚ¼¶ÁªµÄµÚ¼¸Æ¬Ä£¿éÉÏÏÔÊ¾£¬´ÓÇ°µ½ºóÒÀ´ÎÎª1¡¢2¡¢3...
+ 299                     address¡ª¡ªÏÔÊ¾µØÖ·
+ 300                     c¡ª¡ªÊý¾Ý
+C51 COMPILER V9.00   MAX7219                                                               03/09/2015 22:43:04 PAGE 6   
+
+ 301          **************************************************************************************/
+ 302          void Max7219_NoDecode_Display(unsigned char num,unsigned char adress,unsigned char c)
+ 303          {
+ 304   1              Write7219(num,adress,c);
+ 305   1      }
+ 306          /***************************************END********************************************/
+ 307          
+ 308          void Lcd_show_number(unsigned int weight)
+ 309          {       
+ 310   1              unsigned int i,number = weight;
+ 311   1              unsigned char show_addr;
+ 312   1              unsigned char max_bit;
+ 313   1      
+ 314   1              for (i=6; i!=0; i--)
+ 315   1              {
+ 316   2                      max_bit = number/(10^i);
+ 317   2                      if(max_bit != 0) {
+ 318   3                              show_addr++;
+ 319   3                              Max7219_UserDecode_Display(1,show_addr,max_bit,0);              
+ 320   3                              number = number%(10^i);
+ 321   3                      }
+ 322   2              }
+ 323   1      }
+ 324          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    577    ----
+   CONSTANT SIZE    =     71    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

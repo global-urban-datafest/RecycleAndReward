@@ -1,0 +1,4 @@
+"main.obj",
+"MAX7219.obj" 
+TO "GarbageBin" 
+RAMSIZE(256) 
