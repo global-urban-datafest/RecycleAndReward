@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'traceapp',
     'django_extensions',
+    'wechat',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -125,4 +126,8 @@ LOGGING = {
 
 # Customized Settings
 AUTH_PROFILE_MODULE = 'traceapp.GabbageTraceProfile'
+
+# for weixin(wechat) server 
+WECHAT_TOKEN = '<your_wechat_token>'
+
 

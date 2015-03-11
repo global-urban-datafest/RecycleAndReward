@@ -9,4 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^traceapp/', include('traceapp.urls')),
+    url(r'^wechat/', include('wechat.urls')),
 )
