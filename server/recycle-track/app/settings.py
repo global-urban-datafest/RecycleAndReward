@@ -116,6 +116,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'common.logging.http': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'traceapp': {
             'handlers': ['file'],
             'level': 'DEBUG',
@@ -134,5 +139,5 @@ AUTH_PROFILE_MODULE = 'traceapp.GabbageTraceProfile'
 
 # for weixin(wechat) server 
 WECHAT_TOKEN = '<your_wechat_token>'
-
+WECHAT_ACCOUNT = '<your_wechat_account>'
 
