@@ -1,0 +1,126 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-08 14:02+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: traceapp/models.py:12
+msgid "Garbage Trace Profile"
+msgstr "垃圾奖励个人档案"
+
+#: traceapp/models.py:13
+msgid "Garbage Trace Profiles"
+msgstr "垃圾奖励个人档案"
+
+#: traceapp/models.py:17
+msgid "Address"
+msgstr "地址"
+
+#: traceapp/models.py:19
+msgid "Points"
+msgstr "积分"
+
+#: traceapp/models.py:20
+msgid "Points on the way"
+msgstr "在途积分"
+
+#: traceapp/models.py:21
+msgid "Points failed"
+msgstr "已扣积分"
+
+#: traceapp/models.py:23
+msgid "Total Weight"
+msgstr "总垃圾重量"
+
+#: traceapp/models.py:35
+msgid "Unassigned"
+msgstr "未分配"
+
+#: traceapp/models.py:36
+msgid "Assigned"
+msgstr "已分配"
+
+#: traceapp/models.py:37
+msgid "Used"
+msgstr "已使用"
+
+#: traceapp/models.py:38
+msgid "Transfering"
+msgstr "转运中"
+
+#: traceapp/models.py:39
+msgid "Recycled"
+msgstr "已回收"
+
+#: traceapp/models.py:42
+msgid "General"
+msgstr "通用垃圾"
+
+#: traceapp/models.py:57
+msgid "Check Point"
+msgstr "站点"
+
+#: traceapp/models.py:58
+msgid "Check Points"
+msgstr "站点"
+
+#: traceapp/models.py:61
+msgid "Dustbin"
+msgstr "垃圾箱"
+
+#: traceapp/models.py:62
+msgid "Disctrict Center"
+msgstr "转运中心"
+
+#: traceapp/models.py:63
+msgid "Recycling Center"
+msgstr "垃圾分拣中心"
+
+#: traceapp/models.py:75
+msgid "Bag Trace"
+msgstr "垃圾跟踪记录"
+
+#: traceapp/models.py:76
+msgid "Bag Traces"
+msgstr "垃圾跟踪记录"
+
+#: traceapp/models.py:79
+msgid "Assign to user"
+msgstr "分配给用户"
+
+#: traceapp/models.py:80
+msgid "Dump bag"
+msgstr "使用垃圾袋"
+
+#: traceapp/models.py:81
+msgid "Bag accepted"
+msgstr "垃圾袋被接收"
+
+#: traceapp/models.py:82
+msgid "Bag rejected"
+msgstr "垃圾袋被拒绝"
+
+#: traceapp/models.py:83
+msgid "Bag arrived"
+msgstr "到达站点"
+
+#: traceapp/models.py:84
+msgid "Bag passed"
+msgstr "分类检查通过"
+
+#: traceapp/models.py:85
+msgid "Bag failed"
+msgstr "分类检查不通过"
